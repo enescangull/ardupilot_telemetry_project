@@ -86,6 +86,13 @@ class TopBar extends StatelessWidget {
             Color(0xFF0C2433),
             Color(0xFF1E4A66),
           ),
+          SizedBox(width: 10),
+          _chip(
+            'GPS ${GpsFix.fromId(t.fixType ?? -1)?.label ?? 'N/A'} · ${t.satellitesVisible ?? '-'} SATELLITES',
+            Colors.white,
+            GpsFix.fromId(t.fixType ?? -1)?.color ?? Colors.red,
+            GpsFix.fromId(t.fixType ?? -1)?.color ?? Colors.red,
+          ),
         ],
       ),
     );

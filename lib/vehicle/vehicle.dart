@@ -104,6 +104,9 @@ class Vehicle {
           batteryPct: m.batteryRemaining > 100 || m.batteryRemaining < 0
               ? null
               : m.batteryRemaining,
+          currentBattery: m.currentBattery == -1 || m.currentBattery < 0
+              ? null
+              : (m.currentBattery / 100).toInt(),
         );
       case VfrHud m:
         telemetry.value = t.copyWith(
@@ -112,6 +115,14 @@ class Vehicle {
               : m.groundspeed,
           throttle: m.throttle > 100 ? null : m.throttle,
           climb: m.climb,
+        );
+      case GpsRawInt m:
+        telemetry.value = t.copyWith(
+          fixType: m.fixType > 8 ? null : m.fixType,
+          satellitesVisible:
+              m.satellitesVisible == 255 || m.satellitesVisible > 50
+              ? null
+              : m.satellitesVisible,
         );
       case CommandAck m:
         final result = switch (m.result) {
