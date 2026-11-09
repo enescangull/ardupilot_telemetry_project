@@ -11,6 +11,9 @@ class Telemetry {
   final double? groundSpeed;
   final double? climb;
   final int? throttle;
+  final int? fixType;
+  final int? satellitesVisible;
+  final double? currentBattery;
   final List<String> messages;
 
   const Telemetry({
@@ -28,6 +31,9 @@ class Telemetry {
     this.groundSpeed,
     this.climb,
     this.throttle,
+    this.fixType,
+    this.satellitesVisible,
+    this.currentBattery,
     this.messages = const [],
   });
 
@@ -50,6 +56,9 @@ class Telemetry {
     double? groundSpeed,
     double? climb,
     int? throttle,
+    int? fixType,
+    int? satellitesVisible,
+    double? currentBattery,
     List<String>? messages,
   }) => Telemetry(
     armed: armed ?? this.armed,
@@ -66,6 +75,9 @@ class Telemetry {
     groundSpeed: groundSpeed ?? this.groundSpeed,
     climb: climb ?? this.climb,
     throttle: throttle ?? this.throttle,
+    fixType: fixType ?? this.fixType,
+    satellitesVisible: satellitesVisible ?? this.satellitesVisible,
+    currentBattery: currentBattery ?? this.currentBattery,
     messages: messages ?? this.messages,
   );
 }

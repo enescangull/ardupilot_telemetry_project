@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:ardupilot_telemetry_project/mavlink/mavlink_codec.dart';
-import 'package:ardupilot_telemetry_project/vehicle/flight_mode.dart';
+import 'package:ardupilot_telemetry_project/vehicle/enums.dart';
 import 'package:ardupilot_telemetry_project/vehicle/telemetry.dart';
 import 'package:dart_mavlink/dialects/ardupilotmega.dart';
 import 'package:dart_mavlink/mavlink_frame.dart';
@@ -71,15 +71,12 @@ class Vehicle {
     if (frame.systemId != 1 || frame.componentId != 1) return;
     final t = telemetry.value;
     final msg = frame.message;
-    print(frame.message.runtimeType);
 
     switch (msg) {
       case Heartbeat m:
-        print(
-          'baseMode: ${m.baseMode}  armed: ${m.baseMode & mavModeFlagSafetyArmed != 0}',
-        );
         if (t.customMode != m.customMode) {
-          final String modeName = flightModeName(m.customMode);
+          final String modeName =
+              FlightMode.fromId(m.customMode)?.label ?? 'UNKNOWN';
           _log('Mod Changed: $modeName');
         }
         telemetry.value = t.copyWith(
@@ -108,6 +105,9 @@ class Vehicle {
           batteryPct: m.batteryRemaining > 100 || m.batteryRemaining < 0
               ? null
               : m.batteryRemaining,
+          currentBattery: m.currentBattery.toInt() == -1 || m.currentBattery < 0
+              ? null
+              : (m.currentBattery / 100),
         );
       case VfrHud m:
         telemetry.value = t.copyWith(
@@ -117,6 +117,21 @@ class Vehicle {
           throttle: m.throttle > 100 ? null : m.throttle,
           climb: m.climb,
         );
+      case GpsRawInt m:
+        telemetry.value = t.copyWith(
+          fixType: m.fixType > 8 ? null : m.fixType,
+          satellitesVisible:
+              m.satellitesVisible == 255 || m.satellitesVisible > 50
+              ? null
+              : m.satellitesVisible,
+        );
+      case Statustext m:
+        final text = String.fromCharCodes(m.text.takeWhile((c) => c != 0));
+        final severity = m.severity;
+        _log(
+          '${Severity.fromId(severity) != null ? Severity.fromId(severity)!.label : 'UNKNOWN'} : $text',
+        );
+
       case CommandAck m:
         final result = switch (m.result) {
           0 => 'MAV_RESULT_ACCEPTED',

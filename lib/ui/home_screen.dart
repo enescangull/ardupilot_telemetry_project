@@ -61,8 +61,13 @@ class HomeScreen extends StatelessWidget {
                           ),
 
                           SizedBox(width: 10),
-                          StatTile(label: 'Yer Hızı', value: '-', unit: 'km/h'),
-
+                          StatTile(
+                            label: 'GROUND SPEED',
+                            value:
+                                telemetry.groundSpeed?.toStringAsFixed(1) ??
+                                '-',
+                            unit: 'm/s',
+                          ),
                           SizedBox(width: 10),
                           StatTile(
                             label: 'Yön',
@@ -73,6 +78,26 @@ class HomeScreen extends StatelessWidget {
 
                           SizedBox(width: 10),
                           StatTile(label: 'Eve Uzaklık', value: "-", unit: 'm'),
+                          SizedBox(width: 10),
+                          StatTile(
+                            label: 'CLIMB',
+                            value: telemetry.climb?.toStringAsFixed(1) ?? '-',
+                            unit: 'm/s',
+                          ),
+                          SizedBox(width: 10),
+                          StatTile(
+                            label: 'THROTTLE',
+                            value: telemetry.throttle?.toString() ?? '-',
+                            unit: '%',
+                          ),
+                          SizedBox(width: 10),
+                          StatTile(
+                            label: 'CURRENT',
+                            value:
+                                telemetry.currentBattery?.toStringAsFixed(1) ??
+                                '-',
+                            unit: 'A',
+                          ),
                         ],
                       ),
                     ),
