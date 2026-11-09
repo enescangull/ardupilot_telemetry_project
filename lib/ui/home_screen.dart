@@ -12,6 +12,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF1F2630),
       body: ValueListenableBuilder(
         valueListenable: vehicle.telemetry,
         builder: (context, telemetry, _) {
