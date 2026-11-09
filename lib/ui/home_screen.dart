@@ -1,4 +1,4 @@
-import 'package:ardupilot_telemetry_project/ui/widgets/google_map.dart';
+import 'package:ardupilot_telemetry_project/ui/map_view.dart';
 import 'package:ardupilot_telemetry_project/ui/widgets/stat_tile.dart';
 import 'package:ardupilot_telemetry_project/ui/widgets/top_bar.dart';
 import 'package:ardupilot_telemetry_project/vehicle/vehicle.dart';
@@ -72,6 +72,20 @@ class HomeScreen extends StatelessWidget {
                           SizedBox(width: 10),
                           StatTile(label: 'Eve Uzaklık', value: "-", unit: 'm'),
                         ],
+                      ),
+                    ),
+                    Positioned(
+                      top: 16,
+                      right: 16,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (telemetry.armed) {
+                            vehicle.disarm();
+                          } else {
+                            vehicle.arm();
+                          }
+                        },
+                        child: Text(telemetry.armed ? 'DISARM' : 'ARM'),
                       ),
                     ),
                   ],

@@ -18,6 +18,40 @@ class Vehicle {
     _sub = codec.frames.listen(_onFrame);
   }
 
+  void arm() {
+    final msg = CommandLong(
+      param1: 1,
+      param2: 0,
+      param3: 0,
+      param4: 0,
+      param5: 0,
+      param6: 0,
+      param7: 0,
+      command: mavCmdComponentArmDisarm,
+      targetSystem: 1,
+      targetComponent: 1,
+      confirmation: 0,
+    );
+    codec.send(msg);
+  }
+
+  void disarm() {
+    final msg = CommandLong(
+      param1: 0,
+      param2: 0,
+      param3: 0,
+      param4: 0,
+      param5: 0,
+      param6: 0,
+      param7: 0,
+      command: mavCmdComponentArmDisarm,
+      targetSystem: 1,
+      targetComponent: 1,
+      confirmation: 0,
+    );
+    codec.send(msg);
+  }
+
   void _onFrame(MavlinkFrame frame) {
     if (frame.systemId != 1 || frame.componentId != 1) return;
     final t = telemetry.value;
