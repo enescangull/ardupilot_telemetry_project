@@ -1,4 +1,4 @@
-import 'package:ardupilot_telemetry_project/ui/widgets/google_map.dart';
+import 'package:ardupilot_telemetry_project/ui/map_view.dart';
 import 'package:ardupilot_telemetry_project/ui/widgets/stat_tile.dart';
 import 'package:ardupilot_telemetry_project/ui/widgets/top_bar.dart';
 import 'package:ardupilot_telemetry_project/vehicle/vehicle.dart';
