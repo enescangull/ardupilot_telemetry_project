@@ -8,6 +8,9 @@ class Telemetry {
   final double? batteryV;
   final int? batteryPct;
   final DateTime? lastHeartbeat;
+  final double? groundSpeed;
+  final double? climb;
+  final int? throttle;
 
   const Telemetry({
     this.armed = false,
@@ -21,6 +24,9 @@ class Telemetry {
     this.batteryV,
     this.batteryPct,
     this.lastHeartbeat,
+    this.groundSpeed,
+    this.climb,
+    this.throttle,
   });
 
   bool get connected =>
@@ -39,6 +45,9 @@ class Telemetry {
     double? batteryV,
     int? batteryPct,
     DateTime? lastHeartbeat,
+    double? groundSpeed,
+    double? climb,
+    int? throttle,
   }) => Telemetry(
     armed: armed ?? this.armed,
     customMode: customMode ?? this.customMode,
@@ -51,5 +60,8 @@ class Telemetry {
     batteryV: batteryV ?? this.batteryV,
     batteryPct: batteryPct ?? this.batteryPct,
     lastHeartbeat: lastHeartbeat ?? this.lastHeartbeat,
+    groundSpeed: groundSpeed ?? this.groundSpeed,
+    climb: climb ?? this.climb,
+    throttle: throttle ?? this.throttle,
   );
 }
