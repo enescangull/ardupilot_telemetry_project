@@ -124,6 +124,13 @@ class Vehicle {
               ? null
               : m.satellitesVisible,
         );
+      case Statustext m:
+        final text = String.fromCharCodes(m.text.takeWhile((c) => c != 0));
+        final severity = m.severity;
+        _log(
+          '${Severity.fromId(severity) != null ? Severity.fromId(severity)!.label : 'UNKNOWN'} : $text',
+        );
+
       case CommandAck m:
         final result = switch (m.result) {
           0 => 'MAV_RESULT_ACCEPTED',
