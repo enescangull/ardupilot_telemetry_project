@@ -1,75 +1,75 @@
 # ArduPilot Telemetry
 
-A Flutter ground control app that receives MAVLink telemetry from an ArduPilot vehicle (or SITL simulator) over UDP, shows it on a live map dashboard, and sends basic commands back.
+ArduPilot aracından (veya SITL simülatöründen) UDP üzerinden MAVLink telemetrisi alan, bunu canlı harita ekranında gösteren ve araca temel komutlar gönderen bir Flutter yer kontrol uygulaması.
 
-## Features
+## Özellikler
 
-- **Live map**: vehicle position and heading on OpenStreetMap, with a follow-vehicle toggle
-- **Top bar**: connection status (heartbeat within 5 s), flight mode, armed state, battery voltage/percentage, GPS fix and satellite count
-- **Stat tiles**: relative altitude, ground speed, heading, climb rate, throttle and battery current
-- **Commands**: ARM / DISARM via `MAV_CMD_COMPONENT_ARM_DISARM`
-- **Message log**: timestamped flight mode changes, `COMMAND_ACK` results and `STATUSTEXT` messages (latest 20 kept)
+- **Canlı harita**: OpenStreetMap üzerinde aracın konumu ve yönü, aracı takip etme düğmesi
+- **Üst bar**: bağlantı durumu (son 5 sn içinde heartbeat), uçuş modu, arm durumu, batarya voltajı/yüzdesi, GPS fix tipi ve uydu sayısı
+- **Gösterge kutuları**: göreli irtifa, yer hızı, yön, tırmanma hızı, gaz ve batarya akımı
+- **Komutlar**: `MAV_CMD_COMPONENT_ARM_DISARM` ile ARM / DISARM
+- **Mesaj kaydı**: zaman damgalı uçuş modu değişiklikleri, `COMMAND_ACK` sonuçları ve `STATUSTEXT` mesajları (son 20 mesaj tutulur)
 
-## Architecture
+## Mimari
 
-Data flows one way through four layers, each depending only on the layer below it:
+Veri dört katmandan tek yönde akar; her katman yalnızca altındaki katmana bağlıdır:
 
 ```
 UDPLink  →  MavlinkCodec  →  Vehicle  →  UI
-(bytes)     (frames)         (Telemetry)  (widgets)
+(byte)      (frame)          (Telemetry)  (widget)
 ```
 
-| Layer | File | Responsibility |
+| Katman | Dosya | Görevi |
 |---|---|---|
-| Link | `lib/link/udp_link.dart` | Binds a UDP socket, streams raw bytes, replies to the last sender |
-| Codec | `lib/mavlink/mavlink_codec.dart` | Parses bytes into MAVLink frames (ArduPilotMega dialect), serializes outgoing messages as MAVLink v2 |
-| Vehicle | `lib/vehicle/` | Turns frames into an immutable `Telemetry` snapshot exposed as a `ValueNotifier`; sends commands |
-| UI | `lib/ui/` | Rebuilds from `Vehicle.telemetry` with `ValueListenableBuilder` |
+| Link | `lib/link/udp_link.dart` | UDP soketini açar, ham byte'ları yayınlar, son gönderene cevap yollar |
+| Codec | `lib/mavlink/mavlink_codec.dart` | Byte'ları MAVLink frame'lerine çevirir (ArduPilotMega dialect), giden mesajları MAVLink v2 olarak paketler |
+| Vehicle | `lib/vehicle/` | Frame'leri değiştirilemez bir `Telemetry` nesnesine dönüştürüp `ValueNotifier` olarak sunar; komut gönderir |
+| UI | `lib/ui/` | `ValueListenableBuilder` ile `Vehicle.telemetry` değiştikçe yeniden çizilir |
 
-Handled MAVLink messages: `HEARTBEAT`, `GLOBAL_POSITION_INT`, `ATTITUDE`, `SYS_STATUS`, `VFR_HUD`, `GPS_RAW_INT`, `STATUSTEXT`, `COMMAND_ACK`. Only frames from system 1 / component 1 are processed. Outgoing frames use system ID 255, component ID 190.
+İşlenen MAVLink mesajları: `HEARTBEAT`, `GLOBAL_POSITION_INT`, `ATTITUDE`, `SYS_STATUS`, `VFR_HUD`, `GPS_RAW_INT`, `STATUSTEXT`, `COMMAND_ACK`. Yalnızca sistem 1 / bileşen 1'den gelen frame'ler işlenir. Giden frame'ler sistem ID 255, bileşen ID 190 kullanır.
 
-## Requirements
+## Gereksinimler
 
 - Flutter SDK (Dart `^3.13.3`)
-- macOS 14.0 or later (the only platform currently configured)
-- An ArduPilot vehicle or [SITL](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html) sending MAVLink to UDP port **14550**
+- macOS 14.0 veya üzeri (şu an yapılandırılmış tek platform)
+- UDP **14550** portuna MAVLink gönderen bir ArduPilot aracı veya [SITL](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html)
 
-## Getting Started
+## Başlarken
 
 ```bash
 flutter pub get
 flutter run -d macos
 ```
 
-Start SITL and forward MAVLink to the app:
+SITL'i başlatıp MAVLink'i uygulamaya yönlendirin:
 
 ```bash
 sim_vehicle.py -v ArduCopter --console --map --out=udp:127.0.0.1:14550
 ```
 
-The top bar switches to **CONNECTED** once heartbeats arrive. The map appears after the first GPS position.
+Heartbeat gelmeye başlayınca üst bar **CONNECTED** olur. Harita, ilk GPS konumu geldikten sonra görünür.
 
-## Project Structure
+## Proje Yapısı
 
 ```
 lib/
-├── main.dart              # Wires link → codec → vehicle and starts the app
+├── main.dart              # link → codec → vehicle bağlantısını kurar ve uygulamayı başlatır
 ├── link/udp_link.dart
 ├── mavlink/mavlink_codec.dart
 ├── vehicle/
-│   ├── vehicle.dart       # Frame handling and commands
-│   ├── telemetry.dart     # Immutable telemetry state
+│   ├── vehicle.dart       # Frame işleme ve komutlar
+│   ├── telemetry.dart     # Değiştirilemez telemetri durumu
 │   └── enums.dart         # FlightMode, GpsFix, Severity
 └── ui/
     ├── home_screen.dart
     ├── map_view.dart
     ├── message_log.dart
-    ├── control_panel.dart # WIP
-    └── widgets/           # TopBar, StatTile, FlightHorizon (WIP)
+    ├── control_panel.dart # Geliştiriliyor
+    └── widgets/           # TopBar, StatTile, FlightHorizon (geliştiriliyor)
 ```
 
-## Roadmap
+## Yol Haritası
 
-- Control panel and flight horizon widgets (scaffolded, not wired in yet)
-- Flight mode switching and takeoff/land commands
-- Distance-to-home tile
+- Kontrol paneli ve uçuş ufku widget'ları (iskeleti hazır, henüz ekrana bağlı değil)
+- Uçuş modu değiştirme ve kalkış/iniş komutları
+- Eve uzaklık göstergesi
