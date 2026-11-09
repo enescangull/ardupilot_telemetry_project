@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:ardupilot_telemetry_project/mavlink/mavlink_codec.dart';
+import 'package:ardupilot_telemetry_project/vehicle/flight_mode.dart';
 import 'package:ardupilot_telemetry_project/vehicle/telemetry.dart';
 import 'package:dart_mavlink/dialects/ardupilotmega.dart';
 import 'package:dart_mavlink/mavlink_frame.dart';
@@ -52,13 +53,35 @@ class Vehicle {
     codec.send(msg);
   }
 
+  void _log(String txt) {
+    DateTime now = DateTime.now();
+    final hour = now.hour.toString().padLeft(2, '0');
+    final minute = now.minute.toString().padLeft(2, '0');
+    final second = now.second.toString().padLeft(2, '0');
+    final String time = '$hour:$minute:$second';
+
+    final String log = '$time  $txt';
+    final t = telemetry.value;
+
+    final messages = [log, ...t.messages].take(20).toList();
+    telemetry.value = t.copyWith(messages: messages);
+  }
+
   void _onFrame(MavlinkFrame frame) {
     if (frame.systemId != 1 || frame.componentId != 1) return;
     final t = telemetry.value;
     final msg = frame.message;
+    print(frame.message.runtimeType);
 
     switch (msg) {
       case Heartbeat m:
+        print(
+          'baseMode: ${m.baseMode}  armed: ${m.baseMode & mavModeFlagSafetyArmed != 0}',
+        );
+        if (t.customMode != m.customMode) {
+          final String modeName = flightModeName(m.customMode);
+          _log('Mod Changed: $modeName');
+        }
         telemetry.value = t.copyWith(
           armed: m.baseMode & mavModeFlagSafetyArmed != 0,
           customMode: m.customMode,
@@ -94,6 +117,22 @@ class Vehicle {
           throttle: m.throttle > 100 ? null : m.throttle,
           climb: m.climb,
         );
+      case CommandAck m:
+        final result = switch (m.result) {
+          0 => 'MAV_RESULT_ACCEPTED',
+          1 => 'MAV_RESULT_TEMPORARILY_REJECTED',
+          2 => 'MAV_RESULT_DENIED',
+          3 => 'MAV_RESULT_UNSUPPORTED',
+          4 => 'MAV_RESULT_FAILED',
+          5 => 'MAV_RESULT_IN_PROGRESS',
+          6 => 'MAV_RESULT_CANCELLED',
+          7 => 'MAV_RESULT_COMMAND_LONG_ONLY',
+          8 => 'MAV_RESULT_COMMAND_INT_ONLY',
+          9 => 'MAV_RESULT_COMMAND_UNSUPPORTED_MAV_FRAME',
+          _ => 'kod: ${m.result}',
+        };
+        final command = m.command == 400 ? 'ARM/DISARM' : '${m.command}';
+        _log('$command : $result');
       default:
         break;
     }
