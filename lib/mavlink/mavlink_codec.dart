@@ -18,7 +18,6 @@ import '../link/udp_link.dart';
 class MavlinkCodec {
   // Byte'ları alacağımız kaynak. Link sözleşmesi; UdpLink da olabilir başka şey de.
   final Link link;
-
   // MavlinkParser = paketin hazır tercümanı.
   // İçine "dialect" (sözlük) veriyoruz: ArduPilot'un mesajlarını tanısın diye.
   // Dialect = hangi mesaj numarası hangi mesaj demek, onun listesi.
@@ -37,6 +36,8 @@ class MavlinkCodec {
   // DİKKAT: Bu stream'i sadece BİR kişi dinleyebilir (Vehicle).
   Stream<MavlinkFrame> get frames => _parser.stream;
 
+  int _sequence = 0;
+
   void start() {
     // Link'in byte yayınına abone ol.
     // Her byte paketi geldiğinde _parser.parse(paket) çağrılsın.
@@ -52,6 +53,13 @@ class MavlinkCodec {
   void stop() => _sub?.cancel(); // aboneliği iptal et
 
   // 2. haftada buraya send(...) eklenecek: mesajı byte'a çevirip link.send ile yollayacak.
+  void send(MavlinkMessage msg) {
+    MavlinkFrame frame = MavlinkFrame.v2(_sequence, 255, 190, msg);
+    final bytes = frame.serialize();
+    link.send(bytes);
+    _sequence++;
+    _sequence = _sequence % 256;
+  }
 }
 
 // ÖZET: byte (Uint8List) -> parser -> MavlinkFrame.
