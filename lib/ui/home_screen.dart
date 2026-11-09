@@ -74,6 +74,20 @@ class HomeScreen extends StatelessWidget {
                         ],
                       ),
                     ),
+                    Positioned(
+                      top: 16,
+                      right: 16,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (telemetry.armed) {
+                            vehicle.disarm();
+                          } else {
+                            vehicle.arm();
+                          }
+                        },
+                        child: Text(telemetry.armed ? 'DISARM' : 'ARM'),
+                      ),
+                    ),
                   ],
                 ),
               ),
