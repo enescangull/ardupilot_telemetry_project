@@ -12,6 +12,8 @@ String flightModeName(int mode) {
       return "LOITER";
     case 6:
       return "RTL";
+    case 7:
+      return "CIRCLE";
     case 9:
       return "LAND";
     default:

@@ -86,6 +86,14 @@ class Vehicle {
               ? null
               : m.batteryRemaining,
         );
+      case VfrHud m:
+        telemetry.value = t.copyWith(
+          groundSpeed: m.groundspeed > 100 || m.groundspeed < 0
+              ? null
+              : m.groundspeed,
+          throttle: m.throttle > 100 ? null : m.throttle,
+          climb: m.climb,
+        );
       default:
         break;
     }
