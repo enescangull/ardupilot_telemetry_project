@@ -1,4 +1,5 @@
 import 'package:ardupilot_telemetry_project/ui/map_view.dart';
+import 'package:ardupilot_telemetry_project/ui/message_log.dart';
 import 'package:ardupilot_telemetry_project/ui/widgets/stat_tile.dart';
 import 'package:ardupilot_telemetry_project/ui/widgets/top_bar.dart';
 import 'package:ardupilot_telemetry_project/vehicle/vehicle.dart';
@@ -90,6 +91,11 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              MessageLog(
+                messages: telemetry.messages.isNotEmpty
+                    ? telemetry.messages
+                    : const ['NO MESSAGES YET'],
               ),
             ],
           );

@@ -11,6 +11,7 @@ class Telemetry {
   final double? groundSpeed;
   final double? climb;
   final int? throttle;
+  final List<String> messages;
 
   const Telemetry({
     this.armed = false,
@@ -27,6 +28,7 @@ class Telemetry {
     this.groundSpeed,
     this.climb,
     this.throttle,
+    this.messages = const [],
   });
 
   bool get connected =>
@@ -48,6 +50,7 @@ class Telemetry {
     double? groundSpeed,
     double? climb,
     int? throttle,
+    List<String>? messages,
   }) => Telemetry(
     armed: armed ?? this.armed,
     customMode: customMode ?? this.customMode,
@@ -63,5 +66,6 @@ class Telemetry {
     groundSpeed: groundSpeed ?? this.groundSpeed,
     climb: climb ?? this.climb,
     throttle: throttle ?? this.throttle,
+    messages: messages ?? this.messages,
   );
 }
