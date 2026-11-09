@@ -75,7 +75,8 @@ class Vehicle {
     switch (msg) {
       case Heartbeat m:
         if (t.customMode != m.customMode) {
-          final String modeName = FlightMode.fromId(m.customMode).toString();
+          final String modeName =
+              FlightMode.fromId(m.customMode)?.label ?? 'UNKOWN';
           _log('Mod Changed: $modeName');
         }
         telemetry.value = t.copyWith(
@@ -104,9 +105,9 @@ class Vehicle {
           batteryPct: m.batteryRemaining > 100 || m.batteryRemaining < 0
               ? null
               : m.batteryRemaining,
-          currentBattery: m.currentBattery == -1 || m.currentBattery < 0
+          currentBattery: m.currentBattery.toInt() == -1 || m.currentBattery < 0
               ? null
-              : (m.currentBattery / 100).toInt(),
+              : (m.currentBattery / 100),
         );
       case VfrHud m:
         telemetry.value = t.copyWith(

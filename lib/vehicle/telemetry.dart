@@ -13,7 +13,7 @@ class Telemetry {
   final int? throttle;
   final int? fixType;
   final int? satellitesVisible;
-  final int? currentBattery;
+  final double? currentBattery;
   final List<String> messages;
 
   const Telemetry({
@@ -58,7 +58,7 @@ class Telemetry {
     int? throttle,
     int? fixType,
     int? satellitesVisible,
-    int? currentBattery,
+    double? currentBattery,
     List<String>? messages,
   }) => Telemetry(
     armed: armed ?? this.armed,

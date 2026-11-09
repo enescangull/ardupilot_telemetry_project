@@ -87,8 +87,7 @@ class HomeScreen extends StatelessWidget {
                           SizedBox(width: 10),
                           StatTile(
                             label: 'THROTTLE',
-                            value:
-                                telemetry.throttle?.toStringAsFixed(1) ?? '-',
+                            value: telemetry.throttle?.toString() ?? '-',
                             unit: '%',
                           ),
                           SizedBox(width: 10),
