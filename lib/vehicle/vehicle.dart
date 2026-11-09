@@ -71,13 +71,9 @@ class Vehicle {
     if (frame.systemId != 1 || frame.componentId != 1) return;
     final t = telemetry.value;
     final msg = frame.message;
-    print(frame.message.runtimeType);
 
     switch (msg) {
       case Heartbeat m:
-        print(
-          'baseMode: ${m.baseMode}  armed: ${m.baseMode & mavModeFlagSafetyArmed != 0}',
-        );
         if (t.customMode != m.customMode) {
           final String modeName = FlightMode.fromId(m.customMode).toString();
           _log('Mod Changed: $modeName');
