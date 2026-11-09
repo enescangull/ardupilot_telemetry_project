@@ -76,7 +76,7 @@ class Vehicle {
       case Heartbeat m:
         if (t.customMode != m.customMode) {
           final String modeName =
-              FlightMode.fromId(m.customMode)?.label ?? 'UNKOWN';
+              FlightMode.fromId(m.customMode)?.label ?? 'UNKNOWN';
           _log('Mod Changed: $modeName');
         }
         telemetry.value = t.copyWith(
