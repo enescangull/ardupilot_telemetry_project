@@ -1,4 +1,4 @@
-import 'package:ardupilot_telemetry_project/vehicle/flight_mode.dart';
+import 'package:ardupilot_telemetry_project/vehicle/enums.dart';
 import 'package:ardupilot_telemetry_project/vehicle/telemetry.dart';
 import 'package:flutter/material.dart';
 
@@ -65,7 +65,7 @@ class TopBar extends StatelessWidget {
           ),
           SizedBox(width: 10),
           _chip(
-            flightModeName(t.customMode),
+            FlightMode.fromId(t.customMode)?.label ?? 'UNKNOWN',
             Color(0xFF7DD3FC),
             Color(0xFF0C2433),
             Color(0xFF1E4A66),

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:ardupilot_telemetry_project/mavlink/mavlink_codec.dart';
-import 'package:ardupilot_telemetry_project/vehicle/flight_mode.dart';
+import 'package:ardupilot_telemetry_project/vehicle/enums.dart';
 import 'package:ardupilot_telemetry_project/vehicle/telemetry.dart';
 import 'package:dart_mavlink/dialects/ardupilotmega.dart';
 import 'package:dart_mavlink/mavlink_frame.dart';
@@ -79,7 +79,7 @@ class Vehicle {
           'baseMode: ${m.baseMode}  armed: ${m.baseMode & mavModeFlagSafetyArmed != 0}',
         );
         if (t.customMode != m.customMode) {
-          final String modeName = flightModeName(m.customMode);
+          final String modeName = FlightMode.fromId(m.customMode).toString();
           _log('Mod Changed: $modeName');
         }
         telemetry.value = t.copyWith(
