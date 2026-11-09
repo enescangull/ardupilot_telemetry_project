@@ -74,8 +74,10 @@ class _MapViewState extends State<MapView> {
         if (!_follow)
           Positioned(
             top: 16,
-            right: 16,
+            left: 16,
             child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              hoverColor: Colors.blue,
               shape: CircleBorder(),
               onPressed: () {
                 setState(() {
